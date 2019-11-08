@@ -11,33 +11,62 @@ using System.Collections.Generic;
  **/
 class Solution
 {
-  static IEnumerable<int> GetDivisors(int n)
+
+  static List<int> FindFactors(int num)
   {
-    return from a in Enumerable.Range(2, n / 2)
-           where n % a == 0
-           select a;
+    List<int>result = new List<int>();
+
+    // Take out the 2s.
+    while (num % 2 == 0)
+    {
+      result.Add(2);
+      num /= 2;
+    }
+
+    // Take out other primes.
+    var factor = 3;
+    while (factor * factor <= num)
+    {
+      if (num % factor == 0)
+      {
+        // This is a factor.
+        result.Add(factor);
+        num /= factor;
+      }
+      else
+      {
+        // Go to the next odd number.
+        factor += 2;
+      }
+    }
+
+    // If num is not 1, then whatever is left is prime.
+    if (num > 1) result.Add(num);
+
+    return result;
   }
 
   static void Main(string[] args)
   {
     int n = int.Parse(Console.ReadLine());
     List<double> xValues = new List<double>();
-    var divisors = GetDivisors(n).DefaultIfEmpty(n);
+    var divisors = FindFactors(n);
 
-    foreach (var divisor in divisors)
+     foreach (var divisor in divisors)
     {
-      // Write an action using Console.WriteLine()
-      // To debug: Console.Error.WriteLine("Debug messages...");
-      double x = 2 * n;
-      while (x <= (double)n * (n + 1))
+    // Write an action using Console.WriteLine()
+    // To debug: Console.Error.WriteLine("Debug messages...");
+      for (long y = n + 1; y <= 2 * n; y++)
       {
-        if (n * x / (x - n) == (int)(n * x / (x - n)) && xValues.IndexOf(x) == -1)
+        if (((y*n )/ (y - n)) % divisor == 0 && ((y * n) * y/ (y - n)) % n == 0 && xValues.IndexOf((y * n) / (y - n)) == -1 && (y * n) / (y - n) == (long)((y * n) / (y - n)))
         {
-          xValues.Add(x);
+          xValues.Add((y * n) / (y - n));
         }
-        x += divisor;
       }
     }
+
+
+
     var resultx = xValues.OrderByDescending(i => i);
     foreach(double xval in resultx)
     {
